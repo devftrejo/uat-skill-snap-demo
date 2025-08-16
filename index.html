@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkillSnap - Bite-Sized AI-Powered Learning</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===== GLOBAL RESET & BASE STYLES ===== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+        color: #1f2937;
+        line-height: 1.6;
+      }
+
+      /* ===== CSS VARIABLES FOR DESIGN SYSTEM ===== */
+      :root {
+        --primary-blue: #2563eb;
+        --secondary-green: #10b981;
+        --error-red: #ef4444;
+        --neutral-bg: #f3f4f6;
+        --card-bg: #ffffff;
+        --text-primary: #1f2937;
+        --text-secondary: #6b7280;
+        --code-bg: #111827;
+        --border-light: #e5e7eb;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+
+      /* ===== TYPOGRAPHY ===== */
+      h1,
+      h2,
+      h3 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+      }
+
+      .logo {
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-blue);
+      }
+
+      /* ===== UTILITY CLASSES ===== */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        font-family: "Inter", sans-serif;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-blue);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #1e40af;
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background-color: var(--card-bg);
+        color: var(--text-primary);
+        border: 2px solid var(--border-light);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--primary-blue);
+        color: var(--primary-blue);
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      /* ===== HEADER STYLES ===== */
+      .header {
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border-light);
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--secondary-green)
+        );
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* ===== AUTHENTICATION STYLES ===== */
+      .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(
+          135deg,
+          var(--primary-blue),
+          var(--secondary-green)
+        );
+      }
+
+      .auth-card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-lg);
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .form-input {
+        padding: 0.75rem;
+        border: 2px solid var(--border-light);
+        border-radius: 0.5rem;
+        font-family: "Inter", sans-serif;
+        transition: border-color 0.2s ease;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+      }
+
+      /* ===== DASHBOARD STYLES ===== */
+      .dashboard {
+        padding: 2rem 0;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .today-snap-card {
+        grid-column: 1 / -1;
+        text-align: center;
+        background: linear-gradient(135deg, var(--primary-blue), #3b82f6);
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .today-snap-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+
+      .today-snap-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .progress-ring {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 1rem;
+        position: relative;
+      }
+
+      .progress-ring-circle {
+        width: 100%;
+        height: 100%;
+        border: 8px solid var(--border-light);
+        border-radius: 50%;
+        position: relative;
+        background: conic-gradient(
+          var(--secondary-green) 0deg,
+          var(--border-light) 0deg
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+
+      .streak-display {
+        text-align: center;
+      }
+
+      .streak-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--secondary-green);
+        display: block;
+      }
+
+      .fire-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      /* ===== LESSON PLAYER STYLES ===== */
+      .lesson-player {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .lesson-header {
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border-light);
+        padding: 1rem 0;
+      }
+
+      .lesson-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .back-button:hover {
+        color: var(--primary-blue);
+      }
+
+      .lesson-progress {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+      }
+
+      .lesson-content {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .lesson-card {
+        width: 100%;
+        max-width: 800px;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .card-content {
+        text-align: center;
+      }
+
+      .code-block {
+        background: var(--code-bg);
+        color: #e5e7eb;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        margin: 1rem 0;
+        overflow-x: auto;
+        white-space: pre-wrap;
+      }
+
+      .code-explanation {
+        background: #f0f9ff;
+        border-left: 4px solid var(--primary-blue);
+        padding: 1rem;
+        margin: 1rem 0;
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
+
+      .card-list {
+        text-align: left;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .card-list li {
+        margin: 0.5rem 0;
+        padding-left: 1rem;
+      }
+
+      /* ===== QUIZ STYLES ===== */
+      .quiz-container {
+        text-align: center;
+      }
+
+      .quiz-question {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+      }
+
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 500px;
+        margin: 0 auto 2rem;
+      }
+
+      .quiz-option {
+        padding: 1rem;
+        border: 2px solid var(--border-light);
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--card-bg);
+      }
+
+      .quiz-option:hover {
+        border-color: var(--primary-blue);
+        background: #f0f9ff;
+      }
+
+      .quiz-option.selected {
+        border-color: var(--primary-blue);
+        background: #f0f9ff;
+      }
+
+      .quiz-option.correct {
+        border-color: var(--secondary-green);
+        background: #f0fdf4;
+        color: var(--secondary-green);
+      }
+
+      .quiz-option.incorrect {
+        border-color: var(--error-red);
+        background: #fef2f2;
+        color: var(--error-red);
+      }
+
+      .quiz-input {
+        padding: 1rem;
+        border: 2px solid var(--border-light);
+        border-radius: 0.5rem;
+        font-family: "Fira Code", monospace;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+
+      .quiz-feedback {
+        margin: 1rem 0;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+      }
+
+      .quiz-feedback.correct {
+        background: #f0fdf4;
+        color: var(--secondary-green);
+        border: 1px solid var(--secondary-green);
+      }
+
+      .quiz-feedback.incorrect {
+        background: #fef2f2;
+        color: var(--error-red);
+        border: 1px solid var(--error-red);
+      }
+
+      /* ===== NAVIGATION STYLES ===== */
+      .lesson-navigation {
+        background: var(--card-bg);
+        border-top: 1px solid var(--border-light);
+        padding: 1rem 0;
+      }
+
+      .nav-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 8px;
+        background: var(--border-light);
+        border-radius: 4px;
+        margin: 0 2rem;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          var(--primary-blue),
+          var(--secondary-green)
+        );
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+
+      /* ===== COMPLETION STYLES ===== */
+      .completion-container {
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .completion-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+
+      .completion-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--secondary-green);
+      }
+
+      .completion-message {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+      }
+
+      /* ===== RESPONSIVE DESIGN ===== */
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 0.5rem;
+        }
+
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+
+        .lesson-card {
+          padding: 1.5rem;
+          margin: 1rem;
+        }
+
+        .nav-content {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .progress-bar {
+          margin: 0;
+          order: -1;
+        }
+
+        .lesson-header-content {
+          flex-direction: column;
+          gap: 0.5rem;
+          text-align: center;
+        }
+      }
+
+      /* ===== ANIMATION CLASSES ===== */
+      .fade-in {
+        animation: fadeIn 0.3s ease;
+      }
+
+      .slide-in {
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* ===== CONFETTI ANIMATION ===== */
+      .confetti {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--secondary-green);
+        animation: confettiFall 3s linear infinite;
+      }
+
+      @keyframes confettiFall {
+        0% {
+          transform: translateY(-100vh) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ===== AUTHENTICATION SCREEN ===== -->
+    <div id="authScreen" class="auth-container">
+      <div class="auth-card fade-in">
+        <div style="text-align: center; margin-bottom: 2rem">
+          <h1 class="logo">SkillSnap</h1>
+          <p style="color: var(--text-secondary); margin-top: 0.5rem">
+            Bite-Sized AI-Powered Learning
+          </p>
+        </div>
+
+        <form id="authForm" class="auth-form">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              class="form-input"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              class="form-input"
+              placeholder="Create a password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            Start Learning JavaScript 🚀
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem">
+          <h3>How to Use SkillSnap:</h3>
+          <ol
+            style="
+              text-align: left;
+              margin-top: 1rem;
+              color: var(--text-secondary);
+            "
+          >
+            <li>
+              <strong>Create your account</strong> → Sign up to track your
+              progress
+            </li>
+            <li>
+              <strong>Start your Snap</strong> → Each day, a new 5-minute
+              JavaScript lesson
+            </li>
+            <li>
+              <strong>Learn in Snaps</strong> → Read card-based lessons with
+              examples
+            </li>
+            <li>
+              <strong>Test yourself</strong> → Answer quick quizzes to reinforce
+              learning
+            </li>
+            <li>
+              <strong>Track progress</strong> → Build streaks and earn
+              achievements
+            </li>
+            <li>
+              <strong>Stay consistent</strong> → Return daily to unlock new
+              Snaps!
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MAIN APPLICATION ===== -->
+    <div id="mainApp" class="hidden">
+      <!-- Header -->
+      <header class="header">
+        <div class="container">
+          <div class="header-content">
+            <h1 class="logo">SkillSnap</h1>
+            <div class="user-menu">
+              <span id="userName">Welcome!</span>
+              <div class="user-avatar" id="userAvatar" onclick="logout()">
+                JD
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ===== DASHBOARD SCREEN ===== -->
+      <div id="dashboardScreen" class="dashboard">
+        <div class="container">
+          <div class="dashboard-grid">
+            <!-- Progress Overview Card -->
+            <div class="card">
+              <h3 style="margin-bottom: 1rem">Your Progress</h3>
+              <div class="progress-ring">
+                <div class="progress-ring-circle" id="progressRing">
+                  <span id="progressPercent">0%</span>
+                </div>
+              </div>
+              <p
+                id="progressText"
+                style="text-align: center; color: var(--text-secondary)"
+              >
+                0 of 5 Snaps Completed
+              </p>
+            </div>
+
+            <!-- Streak Counter Card -->
+            <div class="card">
+              <div class="streak-display">
+                <div class="fire-icon">🔥</div>
+                <span class="streak-number" id="streakNumber">0</span>
+                <p style="color: var(--text-secondary)">Day Streak</p>
+                <p
+                  style="
+                    font-size: 0.875rem;
+                    color: var(--secondary-green);
+                    margin-top: 0.5rem;
+                  "
+                >
+                  Keep the flame alive!
+                </p>
+              </div>
+            </div>
+
+            <!-- Today's Snap Card -->
+            <div class="card today-snap-card">
+              <div class="today-snap-content">
+                <div style="font-size: 3rem; margin-bottom: 1rem">📚</div>
+                <h2 style="margin-bottom: 1rem" id="todaySnapTitle">
+                  Today's Snap: What is JavaScript?
+                </h2>
+                <p
+                  style="margin-bottom: 2rem; opacity: 0.9"
+                  id="todaySnapDescription"
+                >
+                  A 5-minute lesson to get you started with JavaScript basics.
+                </p>
+                <button
+                  class="btn btn-primary"
+                  onclick="startTodaysSnap()"
+                  style="
+                    background: rgba(255, 255, 255, 0.2);
+                    border: 2px solid white;
+                    color: white;
+                    font-size: 1.1rem;
+                  "
+                >
+                  Start Your 5-Min Snap →
+                </button>
+              </div>
+            </div>
+
+            <!-- Review Past Lessons Card -->
+            <div class="card">
+              <h3 style="margin-bottom: 1rem">Review Past Lessons</h3>
+              <div id="pastLessons">
+                <p
+                  style="
+                    color: var(--text-secondary);
+                    text-align: center;
+                    padding: 2rem;
+                  "
+                >
+                  Complete your first lesson to unlock reviews!
+                </p>
+              </div>
+            </div>
+
+            <!-- Achievements Card -->
+            <div class="card">
+              <h3 style="margin-bottom: 1rem">Achievements</h3>
+              <div
+                id="achievements"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                  gap: 1rem;
+                  text-align: center;
+                "
+              >
+                <div class="achievement-badge">
+                  <div style="font-size: 2rem; opacity: 0.3">⭐</div>
+                  <p style="font-size: 0.75rem; color: var(--text-secondary)">
+                    First Lesson
+                  </p>
+                </div>
+                <div class="achievement-badge">
+                  <div style="font-size: 2rem; opacity: 0.3">🔥</div>
+                  <p style="font-size: 0.75rem; color: var(--text-secondary)">
+                    3-Day Streak
+                  </p>
+                </div>
+                <div class="achievement-badge">
+                  <div style="font-size: 2rem; opacity: 0.3">🏆</div>
+                  <p style="font-size: 0.75rem; color: var(--text-secondary)">
+                    Quiz Master
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LESSON PLAYER SCREEN ===== -->
+      <div id="lessonScreen" class="lesson-player hidden">
+        <!-- Lesson Header -->
+        <div class="lesson-header">
+          <div class="container">
+            <div class="lesson-header-content">
+              <a href="#" class="back-button" onclick="returnToDashboard()"
+                >← Back to Dashboard</a
+              >
+              <h2 id="lessonTitle">Lesson Title</h2>
+              <div class="lesson-progress" id="lessonProgress">Card 1 of 5</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+          <div class="lesson-card slide-in">
+            <div id="cardContent" class="card-content">
+              <!-- Dynamic content will be inserted here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="lesson-navigation">
+          <div class="container">
+            <div class="nav-content">
+              <button
+                class="btn btn-secondary"
+                id="prevButton"
+                onclick="previousCard()"
+                disabled
+              >
+                ◀ Previous
+              </button>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progressFill"
+                  style="width: 0%"
+                ></div>
+              </div>
+              <button
+                class="btn btn-primary"
+                id="nextButton"
+                onclick="nextCard()"
+              >
+                Next ▶
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===== GLOBAL APPLICATION STATE =====
+      let currentUser = null;
+      let userProgress = {};
+      let currentLesson = null;
+      let currentCardIndex = 0;
+      let currentQuizIndex = 0;
+      let isInQuizMode = false;
+      let isInCompletionMode = false;
+
+      // ===== LESSON DATA =====
+      const lessons = [
+        {
+          lessonId: 1,
+          title: "What is JavaScript?",
+          cards: [
+            {
+              id: 1,
+              type: "text",
+              content:
+                "💡 JavaScript is a programming language that makes web pages interactive. It runs directly in your browser.",
+            },
+            {
+              id: 2,
+              type: "list",
+              title: "Why Learn JavaScript?",
+              items: [
+                "It powers most modern websites.",
+                "It's the foundation of front-end development.",
+                "It's also used on the back end (Node.js).",
+              ],
+            },
+            {
+              id: 3,
+              type: "text",
+              content:
+                "👉 Without JavaScript, websites would be static — no animations, forms, or interactivity.",
+            },
+          ],
+          quiz: [
+            {
+              id: 1,
+              type: "multiple-choice",
+              question: "What is JavaScript mainly used for?",
+              options: [
+                "Making websites interactive",
+                "Designing website layouts",
+                "Storing data in databases",
+              ],
+              answer: 0,
+            },
+            {
+              id: 2,
+              type: "true-false",
+              question: "JavaScript runs only on the server.",
+              answer: false,
+            },
+          ],
+          completionMessage:
+            "🎉 Great start! You now know what JavaScript is and why it's important.",
+        },
+        {
+          lessonId: 2,
+          title: "Hello World!",
+          cards: [
+            {
+              id: 1,
+              type: "text",
+              content:
+                "💡 The classic first program is printing 'Hello World!' to the console.",
+            },
+            {
+              id: 2,
+              type: "code",
+              title: "Example",
+              content: "console.log('Hello World!');",
+              explanation:
+                "This prints text to the browser's developer console.",
+            },
+            {
+              id: 3,
+              type: "text",
+              content:
+                "👉 Try opening the console in your browser (F12 or right-click → Inspect → Console).",
+            },
+          ],
+          quiz: [
+            {
+              id: 1,
+              type: "fill-in-the-blank",
+              question:
+                "Write the code to display 'Hello World!' in the console.",
+              answer: "console.log('Hello World!');",
+            },
+            {
+              id: 2,
+              type: "true-false",
+              question:
+                "console.log is used to show messages in the browser console.",
+              answer: true,
+            },
+          ],
+          completionMessage:
+            "🚀 You just wrote your first line of JavaScript! On to the next Snap.",
+        },
+        {
+          lessonId: 3,
+          title: "Comments",
+          cards: [
+            {
+              id: 1,
+              type: "text",
+              content:
+                "💡 Comments are notes in your code that the computer ignores. They help people understand your code.",
+            },
+            {
+              id: 2,
+              type: "code",
+              title: "Single-line comment",
+              content: "// This is a comment\nconsole.log('Hello');",
+              explanation: "Anything after // on the same line is ignored.",
+            },
+            {
+              id: 3,
+              type: "code",
+              title: "Multi-line comment",
+              content:
+                "/*\nThis is a multi-line comment.\nIt can span multiple lines.\n*/",
+              explanation: "Use /* ... */ for longer notes.",
+            },
+          ],
+          quiz: [
+            {
+              id: 1,
+              type: "multiple-choice",
+              question: "Which symbol starts a single-line comment?",
+              options: ["//", "/*", "#"],
+              answer: 0,
+            },
+            {
+              id: 2,
+              type: "true-false",
+              question: "Comments affect how your program runs.",
+              answer: false,
+            },
+          ],
+          completionMessage:
+            "📝 Awesome! You now know how to add notes to your code.",
+        },
+        {
+          lessonId: 4,
+          title: "Variables in JavaScript (let & const)",
+          cards: [
+            {
+              id: 1,
+              type: "text",
+              content:
+                "💡 Variables are used to store data in JavaScript. 👉 Today, we'll focus on let and const.",
+            },
+            {
+              id: 2,
+              type: "code",
+              title: "Using let",
+              content:
+                'let name = "Alice";\nconsole.log(name);\nname = "Bob";\nconsole.log(name);',
+              explanation: "`let` allows you to reassign values.",
+            },
+            {
+              id: 3,
+              type: "code",
+              title: "Using const",
+              content:
+                "const pi = 3.14;\nconsole.log(pi);\npi = 3.14159; // ❌ Error",
+              explanation: "`const` means constant → cannot be reassigned.",
+            },
+            {
+              id: 4,
+              type: "list",
+              title: "When to Use",
+              items: [
+                "✅ Use let when the value may change.",
+                "✅ Use const when the value should stay the same.",
+              ],
+            },
+          ],
+          quiz: [
+            {
+              id: 1,
+              type: "multiple-choice",
+              question: "Which statement is true about const?",
+              options: [
+                "You can reassign a const variable.",
+                "You cannot reassign a const variable.",
+                "Const variables don't exist in JavaScript.",
+              ],
+              answer: 1,
+            },
+            {
+              id: 2,
+              type: "fill-in-the-blank",
+              question: "___ age = 20;\nage = 21; // This works!",
+              answer: "let",
+            },
+          ],
+          completionMessage:
+            "🎉 Great job! Use const by default, let when values need to change.",
+        },
+        {
+          lessonId: 5,
+          title: "Data Types – Strings",
+          cards: [
+            {
+              id: 1,
+              type: "text",
+              content:
+                "💡 Strings represent text in JavaScript. They are written inside quotes.",
+            },
+            {
+              id: 2,
+              type: "code",
+              title: "Examples",
+              content:
+                "let greeting = 'Hello';\nlet name = \"Alice\";\nconsole.log(greeting + ' ' + name);",
+              explanation: "You can use single or double quotes.",
+            },
+            {
+              id: 3,
+              type: "code",
+              title: "Template Literals",
+              content: "let name = 'Alice';\nconsole.log(`Hello, ${name}!`);",
+              explanation:
+                "Use backticks (`) to insert variables inside strings.",
+            },
+          ],
+          quiz: [
+            {
+              id: 1,
+              type: "true-false",
+              question: "Strings must always use double quotes.",
+              answer: false,
+            },
+            {
+              id: 2,
+              type: "fill-in-the-blank",
+              question:
+                "Use a ___ to insert variables inside a template literal.",
+              answer: "backtick",
+            },
+          ],
+          completionMessage:
+            "🎉 You now know how to work with strings in JavaScript!",
+        },
+      ];
+
+      // ===== AUTHENTICATION FUNCTIONS =====
+      function initializeApp() {
+        // Check if user is already logged in
+        const savedUser = localStorage.getItem("skillsnapUser");
+        const savedProgress = localStorage.getItem("skillsnapProgress");
+
+        if (savedUser) {
+          currentUser = JSON.parse(savedUser);
+          userProgress = savedProgress
+            ? JSON.parse(savedProgress)
+            : {
+                completedLessons: [],
+                currentStreak: 0,
+                lastLoginDate: null,
+                quizScores: {},
+              };
+          showDashboard();
+        } else {
+          showAuthScreen();
+        }
+      }
+
+      function showAuthScreen() {
+        document.getElementById("authScreen").classList.remove("hidden");
+        document.getElementById("mainApp").classList.add("hidden");
+      }
+
+      function showMainApp() {
+        document.getElementById("authScreen").classList.add("hidden");
+        document.getElementById("mainApp").classList.remove("hidden");
+      }
+
+      // Handle user registration/login
+      document
+        .getElementById("authForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const name = document.getElementById("name").value;
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          // Create user object
+          currentUser = {
+            name: name,
+            email: email,
+            joinDate: new Date().toISOString(),
+          };
+
+          // Initialize user progress
+          userProgress = {
+            completedLessons: [],
+            currentStreak: 0,
+            lastLoginDate: new Date().toISOString(),
+            quizScores: {},
+          };
+
+          // Save to localStorage
+          localStorage.setItem("skillsnapUser", JSON.stringify(currentUser));
+          localStorage.setItem(
+            "skillsnapProgress",
+            JSON.stringify(userProgress)
+          );
+
+          showMainApp();
+          showDashboard();
+        });
+
+      function logout() {
+        if (confirm("Are you sure you want to logout?")) {
+          localStorage.removeItem("skillsnapUser");
+          localStorage.removeItem("skillsnapProgress");
+          currentUser = null;
+          userProgress = {};
+          showAuthScreen();
+        }
+      }
+
+      // ===== DASHBOARD FUNCTIONS =====
+      function showDashboard() {
+        document.getElementById("dashboardScreen").classList.remove("hidden");
+        document.getElementById("lessonScreen").classList.add("hidden");
+
+        updateDashboard();
+      }
+
+      function updateDashboard() {
+        if (!currentUser) return;
+
+        // Update user info
+        document.getElementById(
+          "userName"
+        ).textContent = `Welcome, ${currentUser.name}!`;
+        document.getElementById("userAvatar").textContent = currentUser.name
+          .substring(0, 2)
+          .toUpperCase();
+
+        // Update progress
+        const completedCount = userProgress.completedLessons.length;
+        const totalLessons = lessons.length;
+        const progressPercent = Math.round(
+          (completedCount / totalLessons) * 100
+        );
+
+        document.getElementById(
+          "progressPercent"
+        ).textContent = `${progressPercent}%`;
+        document.getElementById(
+          "progressText"
+        ).textContent = `${completedCount} of ${totalLessons} Snaps Completed`;
+
+        // Update progress ring visual
+        const progressRing = document.getElementById("progressRing");
+        progressRing.style.background = `conic-gradient(var(--secondary-green) ${
+          progressPercent * 3.6
+        }deg, var(--border-light) 0deg)`;
+
+        // Update streak
+        updateStreak();
+        document.getElementById("streakNumber").textContent =
+          userProgress.currentStreak;
+
+        // Update today's snap
+        const nextLesson = getNextLesson();
+        if (nextLesson) {
+          document.getElementById(
+            "todaySnapTitle"
+          ).textContent = `Today's Snap: ${nextLesson.title}`;
+          document.getElementById(
+            "todaySnapDescription"
+          ).textContent = `A 5-minute lesson to learn ${nextLesson.title.toLowerCase()}.`;
+        } else {
+          document.getElementById("todaySnapTitle").textContent =
+            "All Snaps Complete! 🎉";
+          document.getElementById("todaySnapDescription").textContent =
+            "You've mastered JavaScript basics. Great job!";
+        }
+
+        // Update past lessons
+        updatePastLessons();
+
+        // Update achievements
+        updateAchievements();
+      }
+
+      function updateStreak() {
+        const today = new Date().toDateString();
+        const lastLogin = userProgress.lastLoginDate
+          ? new Date(userProgress.lastLoginDate).toDateString()
+          : null;
+
+        if (lastLogin !== today) {
+          // User hasn't logged in today yet
+          if (lastLogin === new Date(Date.now() - 86400000).toDateString()) {
+            // Logged in yesterday, continue streak
+            userProgress.currentStreak += 1;
+          } else if (lastLogin !== null) {
+            // Streak broken, reset to 1
+            userProgress.currentStreak = 1;
+          } else {
+            // First time login
+            userProgress.currentStreak = 1;
+          }
+
+          userProgress.lastLoginDate = new Date().toISOString();
+          saveProgress();
+        }
+      }
+
+      function updatePastLessons() {
+        const pastLessonsContainer = document.getElementById("pastLessons");
+
+        if (userProgress.completedLessons.length === 0) {
+          pastLessonsContainer.innerHTML =
+            '<p style="color: var(--text-secondary); text-align: center; padding: 2rem;">Complete your first lesson to unlock reviews!</p>';
+          return;
+        }
+
+        let pastLessonsHTML =
+          '<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">';
+
+        userProgress.completedLessons.forEach((lessonId) => {
+          const lesson = lessons.find((l) => l.lessonId === lessonId);
+          if (lesson) {
+            pastLessonsHTML += `
+                        <div class="card" style="padding: 1rem; cursor: pointer; border: 2px solid var(--secondary-green);" onclick="reviewLesson(${lessonId})">
+                            <div style="color: var(--secondary-green); margin-bottom: 0.5rem;">✅</div>
+                            <h4 style="font-size: 0.875rem; margin-bottom: 0.5rem;">${lesson.title}</h4>
+                            <p style="font-size: 0.75rem; color: var(--text-secondary);">Click to review</p>
+                        </div>
+                    `;
+          }
+        });
+
+        pastLessonsHTML += "</div>";
+        pastLessonsContainer.innerHTML = pastLessonsHTML;
+      }
+
+      function updateAchievements() {
+        const achievements = document.getElementById("achievements");
+        let achievementsHTML = "";
+
+        // First Lesson Achievement
+        const firstLessonComplete = userProgress.completedLessons.length > 0;
+        achievementsHTML += `
+                <div class="achievement-badge">
+                    <div style="font-size: 2rem; opacity: ${
+                      firstLessonComplete ? "1" : "0.3"
+                    };">⭐</div>
+                    <p style="font-size: 0.75rem; color: ${
+                      firstLessonComplete
+                        ? "var(--secondary-green)"
+                        : "var(--text-secondary)"
+                    };">First Lesson</p>
+                </div>
+            `;
+
+        // 3-Day Streak Achievement
+        const threeDay = userProgress.currentStreak >= 3;
+        achievementsHTML += `
+                <div class="achievement-badge">
+                    <div style="font-size: 2rem; opacity: ${
+                      threeDay ? "1" : "0.3"
+                    };">🔥</div>
+                    <p style="font-size: 0.75rem; color: ${
+                      threeDay
+                        ? "var(--secondary-green)"
+                        : "var(--text-secondary)"
+                    };">3-Day Streak</p>
+                </div>
+            `;
+
+        // Quiz Master Achievement (80%+ average)
+        const quizMaster = calculateAverageQuizScore() >= 80;
+        achievementsHTML += `
+                <div class="achievement-badge">
+                    <div style="font-size: 2rem; opacity: ${
+                      quizMaster ? "1" : "0.3"
+                    };">🏆</div>
+                    <p style="font-size: 0.75rem; color: ${
+                      quizMaster
+                        ? "var(--secondary-green)"
+                        : "var(--text-secondary)"
+                    };">Quiz Master</p>
+                </div>
+            `;
+
+        achievements.innerHTML = achievementsHTML;
+      }
+
+      function calculateAverageQuizScore() {
+        const scores = Object.values(userProgress.quizScores);
+        if (scores.length === 0) return 0;
+        return scores.reduce((sum, score) => sum + score, 0) / scores.length;
+      }
+
+      function getNextLesson() {
+        return lessons.find(
+          (lesson) => !userProgress.completedLessons.includes(lesson.lessonId)
+        );
+      }
+
+      function startTodaysSnap() {
+        const nextLesson = getNextLesson();
+        if (nextLesson) {
+          startLesson(nextLesson.lessonId);
+        }
+      }
+
+      function reviewLesson(lessonId) {
+        startLesson(lessonId, true);
+      }
+
+      // ===== LESSON PLAYER FUNCTIONS =====
+      function startLesson(lessonId, isReview = false) {
+        currentLesson = lessons.find((l) => l.lessonId === lessonId);
+        currentCardIndex = 0;
+        currentQuizIndex = 0;
+        isInQuizMode = false;
+        isInCompletionMode = false;
+
+        if (!currentLesson) {
+          alert("Lesson not found!");
+          return;
+        }
+
+        showLessonScreen();
+        renderCurrentCard();
+      }
+
+      function showLessonScreen() {
+        document.getElementById("dashboardScreen").classList.add("hidden");
+        document.getElementById("lessonScreen").classList.remove("hidden");
+
+        // Update lesson header
+        document.getElementById("lessonTitle").textContent =
+          currentLesson.title;
+        updateLessonProgress();
+      }
+
+      function updateLessonProgress() {
+        const total =
+          currentLesson.cards.length + currentLesson.quiz.length + 1; // +1 for completion
+        let current = currentCardIndex + 1;
+
+        if (isInQuizMode) {
+          current = currentLesson.cards.length + currentQuizIndex + 1;
+        } else if (isInCompletionMode) {
+          current = total;
+        }
+
+        document.getElementById(
+          "lessonProgress"
+        ).textContent = `Step ${current} of ${total}`;
+
+        // Update progress bar
+        const progressPercent = (current / total) * 100;
+        document.getElementById(
+          "progressFill"
+        ).style.width = `${progressPercent}%`;
+      }
+
+      function renderCurrentCard() {
+        const cardContent = document.getElementById("cardContent");
+
+        if (isInCompletionMode) {
+          renderCompletionScreen();
+          return;
+        }
+
+        if (isInQuizMode) {
+          renderQuiz();
+          return;
+        }
+
+        const card = currentLesson.cards[currentCardIndex];
+        let html = "";
+
+        switch (card.type) {
+          case "text":
+            html = `<div style="font-size: 1.25rem; line-height: 1.6;">${card.content}</div>`;
+            break;
+
+          case "code":
+            html = `
+                        ${
+                          card.title
+                            ? `<h3 style="margin-bottom: 1rem;">${card.title}</h3>`
+                            : ""
+                        }
+                        <div class="code-block">${escapeHtml(
+                          card.content
+                        )}</div>
+                        ${
+                          card.explanation
+                            ? `<div class="code-explanation">${card.explanation}</div>`
+                            : ""
+                        }
+                    `;
+            break;
+
+          case "list":
+            html = `
+                        <h3 style="margin-bottom: 1.5rem;">${card.title}</h3>
+                        <ul class="card-list">
+                            ${card.items
+                              .map((item) => `<li>${item}</li>`)
+                              .join("")}
+                        </ul>
+                    `;
+            break;
+
+          case "recap":
+            html = `
+                        <h3 style="margin-bottom: 1.5rem;">Quick Recap</h3>
+                        <ul class="card-list">
+                            ${card.content
+                              .map((item) => `<li>${item}</li>`)
+                              .join("")}
+                        </ul>
+                    `;
+            break;
+        }
+
+        cardContent.innerHTML = html;
+        updateNavigationButtons();
+        updateLessonProgress();
+      }
+
+      function renderQuiz() {
+        const cardContent = document.getElementById("cardContent");
+        const quiz = currentLesson.quiz[currentQuizIndex];
+
+        let html = `
+                <div class="quiz-container">
+                    <h3 style="margin-bottom: 2rem;">Quiz Time! 🧠</h3>
+                    <div class="quiz-question">${escapeHtml(
+                      quiz.question
+                    )}</div>
+            `;
+
+        switch (quiz.type) {
+          case "multiple-choice":
+            html += '<div class="quiz-options">';
+            quiz.options.forEach((option, index) => {
+              html += `<div class="quiz-option" onclick="selectQuizOption(${index})" data-index="${index}">${escapeHtml(
+                option
+              )}</div>`;
+            });
+            html += "</div>";
+            break;
+
+          case "fill-in-the-blank":
+            html += `<input type="text" class="quiz-input" id="quizInput" placeholder="Type your answer here...">`;
+            break;
+
+          case "true-false":
+            html += `
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(true)" data-answer="true">True</div>
+                            <div class="quiz-option" onclick="selectQuizOption(false)" data-answer="false">False</div>
+                        </div>
+                    `;
+            break;
+        }
+
+        html +=
+          '<button class="btn btn-primary" id="submitQuiz" onclick="submitQuiz()" style="margin-top: 2rem;">Submit Answer</button>';
+        html += "</div>";
+
+        cardContent.innerHTML = html;
+        updateNavigationButtons();
+        updateLessonProgress();
+      }
+
+      function selectQuizOption(value) {
+        // Clear previous selections
+        document.querySelectorAll(".quiz-option").forEach((option) => {
+          option.classList.remove("selected");
+        });
+
+        // Select current option
+        const clickedOption = event.target;
+        clickedOption.classList.add("selected");
+        clickedOption.dataset.selected = value;
+      }
+
+      function submitQuiz() {
+        const quiz = currentLesson.quiz[currentQuizIndex];
+        let userAnswer = null;
+        let isCorrect = false;
+
+        switch (quiz.type) {
+          case "multiple-choice":
+            const selectedOption = document.querySelector(
+              ".quiz-option.selected"
+            );
+            if (selectedOption) {
+              userAnswer = parseInt(selectedOption.dataset.index);
+              isCorrect = userAnswer === quiz.answer;
+            }
+            break;
+
+          case "fill-in-the-blank":
+            userAnswer = document.getElementById("quizInput").value.trim();
+            isCorrect = userAnswer.toLowerCase() === quiz.answer.toLowerCase();
+            break;
+
+          case "true-false":
+            const selectedBool = document.querySelector(
+              ".quiz-option.selected"
+            );
+            if (selectedBool) {
+              userAnswer = selectedBool.dataset.answer === "true";
+              isCorrect = userAnswer === quiz.answer;
+            }
+            break;
+        }
+
+        if (userAnswer === null) {
+          alert("Please select an answer!");
+          return;
+        }
+
+        // Show feedback
+        showQuizFeedback(isCorrect, quiz);
+
+        // Update quiz score
+        if (!userProgress.quizScores[currentLesson.lessonId]) {
+          userProgress.quizScores[currentLesson.lessonId] = 0;
+        }
+        if (isCorrect) {
+          userProgress.quizScores[currentLesson.lessonId] +=
+            100 / currentLesson.quiz.length;
+        }
+      }
+
+      function showQuizFeedback(isCorrect, quiz) {
+        const cardContent = document.getElementById("cardContent");
+
+        // Highlight correct/incorrect answers
+        if (quiz.type === "multiple-choice" || quiz.type === "true-false") {
+          document.querySelectorAll(".quiz-option").forEach((option, index) => {
+            if (quiz.type === "multiple-choice" && index === quiz.answer) {
+              option.classList.add("correct");
+            } else if (
+              quiz.type === "true-false" &&
+              option.dataset.answer === quiz.answer.toString()
+            ) {
+              option.classList.add("correct");
+            } else if (option.classList.contains("selected") && !isCorrect) {
+              option.classList.add("incorrect");
+            }
+          });
+        }
+
+        // Add feedback message
+        const feedbackHTML = `
+                <div class="quiz-feedback ${
+                  isCorrect ? "correct" : "incorrect"
+                }">
+                    ${isCorrect ? "✅ Correct!" : "❌ Incorrect!"} 
+                    ${
+                      isCorrect
+                        ? "Great job!"
+                        : `The correct answer is: ${quiz.answer}`
+                    }
+                </div>
+                <button class="btn btn-primary" onclick="nextQuizQuestion()">Continue →</button>
+            `;
+
+        cardContent.innerHTML += feedbackHTML;
+
+        // Hide submit button
+        document.getElementById("submitQuiz").style.display = "none";
+      }
+
+      function nextQuizQuestion() {
+        currentQuizIndex++;
+
+        if (currentQuizIndex >= currentLesson.quiz.length) {
+          // Quiz complete, show completion screen
+          isInQuizMode = false;
+          isInCompletionMode = true;
+
+          // Mark lesson as completed
+          if (!userProgress.completedLessons.includes(currentLesson.lessonId)) {
+            userProgress.completedLessons.push(currentLesson.lessonId);
+            saveProgress();
+            showConfetti();
+          }
+
+          renderCompletionScreen();
+        } else {
+          renderQuiz();
+        }
+      }
+
+      function renderCompletionScreen() {
+        const cardContent = document.getElementById("cardContent");
+
+        const html = `
+                <div class="completion-container">
+                    <div class="completion-icon">🎉</div>
+                    <h2 class="completion-title">Snap Complete!</h2>
+                    <div class="completion-message">
+                        ${currentLesson.completionMessage}
+                        <br><br>
+                        <strong>🔥 Your streak is now ${
+                          userProgress.currentStreak
+                        } ${
+          userProgress.currentStreak === 1 ? "day" : "days"
+        }!</strong>
+                    </div>
+                    <button class="btn btn-primary" onclick="returnToDashboard()">Return to Dashboard</button>
+                </div>
+            `;
+
+        cardContent.innerHTML = html;
+        updateNavigationButtons();
+        updateLessonProgress();
+      }
+
+      function updateNavigationButtons() {
+        const prevButton = document.getElementById("prevButton");
+        const nextButton = document.getElementById("nextButton");
+
+        if (isInQuizMode || isInCompletionMode) {
+          prevButton.style.display = "none";
+          nextButton.style.display = "none";
+          return;
+        }
+
+        prevButton.style.display = "block";
+        nextButton.style.display = "block";
+
+        // Update previous button
+        prevButton.disabled = currentCardIndex === 0;
+
+        // Update next button
+        if (currentCardIndex >= currentLesson.cards.length - 1) {
+          nextButton.textContent = "Start Quiz →";
+        } else {
+          nextButton.textContent = "Next ▶";
+        }
+      }
+
+      function previousCard() {
+        if (currentCardIndex > 0) {
+          currentCardIndex--;
+          renderCurrentCard();
+        }
+      }
+
+      function nextCard() {
+        if (currentCardIndex < currentLesson.cards.length - 1) {
+          currentCardIndex++;
+          renderCurrentCard();
+        } else {
+          // Start quiz
+          isInQuizMode = true;
+          currentQuizIndex = 0;
+          renderQuiz();
+        }
+      }
+
+      function returnToDashboard() {
+        showDashboard();
+      }
+
+      // ===== UTILITY FUNCTIONS =====
+      function saveProgress() {
+        localStorage.setItem("skillsnapProgress", JSON.stringify(userProgress));
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function showConfetti() {
+        const confettiContainer = document.createElement("div");
+        confettiContainer.className = "confetti";
+        document.body.appendChild(confettiContainer);
+
+        for (let i = 0; i < 50; i++) {
+          const confettiPiece = document.createElement("div");
+          confettiPiece.className = "confetti-piece";
+          confettiPiece.style.left = Math.random() * 100 + "vw";
+          confettiPiece.style.animationDelay = Math.random() * 3 + "s";
+          confettiPiece.style.background = [
+            "var(--primary-blue)",
+            "var(--secondary-green)",
+            "#fbbf24",
+          ][Math.floor(Math.random() * 3)];
+          confettiContainer.appendChild(confettiPiece);
+        }
+
+        setTimeout(() => {
+          document.body.removeChild(confettiContainer);
+        }, 3000);
+      }
+
+      // ===== INITIALIZE APPLICATION =====
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeApp();
+      });
+    </script>
+  </body>
+</html>
